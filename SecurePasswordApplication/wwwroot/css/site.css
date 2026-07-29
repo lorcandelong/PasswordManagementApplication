@@ -1,31 +1,121 @@
 html {
-  font-size: 14px;
+    font-size: 14px;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+    html {
+        font-size: 16px;
+    }
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+:root {
+    --primary-red: #B91C1C;
+    --dark-red: #991B1B;
+    --light-grey: #F5F5F5;
+    --border-grey: #D1D5DB;
+    --text-dark: #1F2937;
 }
 
 html {
-  position: relative;
-  min-height: 100%;
+    position: relative;
+    min-height: 100%;
 }
 
 body {
-  margin-bottom: 60px;
+    margin-bottom: 60px;
+    background-color: var(--light-grey);
+    color: var(--text-dark);
+    font-family: "Segoe UI", Arial, sans-serif;
 }
 
-.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
-  color: var(--bs-secondary-color);
-  text-align: end;
+.navbar {
+    background-color: white !important;
+    border-bottom: 1px solid var(--border-grey);
 }
 
-.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
-  text-align: start;
+.navbar-brand {
+    color: var(--primary-red) !important;
+    font-weight: 700;
+}
+
+.nav-link {
+    color: var(--text-dark) !important;
+}
+
+    .nav-link:hover {
+        color: var(--primary-red) !important;
+    }
+
+.btn-primary {
+    background-color: var(--primary-red);
+    border-color: var(--primary-red);
+}
+
+    .btn-primary:hover {
+        background-color: var(--dark-red);
+        border-color: var(--dark-red);
+    }
+
+.btn-secondary {
+    background-color: white;
+    color: var(--primary-red);
+    border-color: var(--primary-red);
+}
+
+    .btn-secondary:hover {
+        background-color: var(--primary-red);
+        color: white;
+    }
+
+.form-control {
+    border: 1px solid var(--border-grey);
+}
+
+    .form-control:focus {
+        border-color: var(--primary-red);
+        box-shadow: 0 0 0 0.2rem rgba(185, 28, 28, .25);
+    }
+
+.card {
+    background: white;
+    border-radius: 12px;
+    border: 1px solid var(--border-grey);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.card-header {
+    background-color: var(--primary-red);
+    color: white;
+    font-weight: 600;
+}
+
+.table {
+    background: white;
+}
+
+    .table thead {
+        background-color: #e5e7eb;
+    }
+
+    .table th {
+        color: #374151;
+    }
+
+a {
+    color: var(--primary-red);
+}
+
+    a:hover {
+        color: var(--dark-red);
+    }
+
+.form-floating > .form-control-plaintext::placeholder,
+.form-floating > .form-control::placeholder {
+    color: var(--bs-secondary-color);
+    text-align: end;
+}
+
+.form-floating > .form-control-plaintext:focus::placeholder,
+.form-floating > .form-control:focus::placeholder {
+    text-align: start;
 }

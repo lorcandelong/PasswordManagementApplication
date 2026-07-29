@@ -1,8 +1,341 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model SecurePasswordApplication.Models.HomeViewModel
+
+@{
+    ViewData["Title"] = "Dashboard";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+@if (TempData["LogoutMessage"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["LogoutMessage"]
+    </div>
+}
+
+
+<div class="p-4 mb-4 bg-white rounded shadow-sm">
+
+    <h1 class="display-5 fw-bold">
+        Welcome to your Dashboard
+    </h1>
+
+    <p class="text-muted">
+        Manage your passwords with Kestrel
+    </p>
+
+</div>
+
+
+<div class="row g-4 mb-4">
+
+
+    <div class="col-md-4">
+
+        <div class="card h-100">
+
+            <div class="card-body">
+
+                <h5 class="card-title">
+                    Stored Passwords
+                </h5>
+
+                <h2 class="fw-bold">
+                    @Model.TotalPasswords
+                </h2>
+
+                <p class="text-muted">
+                    Password entries saved
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <div class="col-md-4">
+
+        <div class="card h-100">
+
+            <div class="card-body">
+
+                <h5 class="card-title">
+                    Expiring Soon
+                </h5>
+
+                <h2 class="fw-bold text-danger">
+                    @Model.ExpiringPasswords.Count()
+                </h2>
+
+                <p class="text-muted">
+                    Passwords needing attention
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <div class="col-md-4">
+
+        <div class="card h-100">
+
+            <div class="card-body">
+
+                <h5 class="card-title">
+                    Security Status
+                </h5>
+
+                @{
+                    var securityClass = Model.SecurityScore >= 80
+                        ? "text-success"
+                        : Model.SecurityScore >= 50
+                            ? "text-warning"
+                            : "text-danger";
+                }
+
+                <h2 class="fw-bold @securityClass">
+                    @Model.SecurityScore / 100
+                </h2>
+
+                <div class="progress mb-3">
+
+                    @{
+                        var progressClass = Model.SecurityScore >= 80
+                            ? "bg-success"
+                            : Model.SecurityScore >= 50
+                                ? "bg-warning"
+                                : "bg-danger";
+                    }
+
+                    <div class="progress">
+                        <div class="progress-bar @progressClass"
+                             style="width:@(Model.SecurityScore)%">
+                        </div>
+                    </div>
+
+                </div>
+
+
+                @if (Model.SecurityScore >= 80)
+                {
+                    <p class="text-success">
+                        Good
+                    </p>
+                }
+                else if (Model.SecurityScore >= 50)
+                {
+                    <p class="text-warning">
+                        Needs attention
+                    </p>
+                }
+                else
+                {
+                    <p class="text-danger">
+                        Security issues detected
+                    </p>
+                }
+
+            </div>
+
+     </div>
+
+    </div>
+    
+</div>
+
+    
+<div class="card shadow-sm mb-4">
+
+    <div class="card-header">
+        Security Analysis
+    </div>
+
+
+    <div class="card-body">
+
+
+        <div class="row text-center">
+
+
+            <div class="col-md-4">
+
+                <h3 class="text-danger">
+                    @Model.FailedLoginAttempts
+                </h3>
+
+                <p class="text-muted">
+                    Failed Login Attempts
+                </p>
+
+            </div>
+
+
+
+            <div class="col-md-4">
+
+                <h3 class="text-warning">
+                    @Model.WeakPasswords
+                </h3>
+
+                <p class="text-muted">
+                    Weak Passwords
+                </p>
+
+            </div>
+
+
+
+            <div class="col-md-4">
+
+                <h3 class="text-danger">
+                    @Model.ExpiredPasswords
+                </h3>
+
+                <p class="text-muted">
+                    Expired Passwords
+                </p>
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+</div>
+
+<div class="row g-4">
+
+
+    <div class="col-lg-6">
+
+
+        <div class="card">
+
+
+            <div class="card-header">
+
+                Password Expiration Alerts
+
+            </div>
+
+
+            <div class="card-body">
+
+
+                @if (!Model.ExpiringPasswords.Any())
+                {
+                    <p class="text-muted">
+                        No passwords are expiring soon.
+                    </p>
+                }
+                else
+                {
+
+                    @foreach(var password in Model.ExpiringPasswords)
+                    {
+
+                        <div class="alert alert-warning">
+
+                            <strong>
+                                @password.Website
+                            </strong>
+
+                            <br />
+
+                            Expires:
+                            @password.ExpirationDate!.Value.ToShortDateString()
+
+                        </div>
+
+                    }
+
+                }
+
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+
+
+
+    <div class="col-lg-6">
+
+
+        <div class="card">
+
+
+            <div class="card-header">
+
+                Recent Activity
+
+            </div>
+
+
+            <div class="card-body"
+                 style="max-height:300px; overflow-y:auto;">
+
+
+                @if (!Model.ActivityLogs.Any())
+                {
+
+                    <p class="text-muted">
+                        No recent activity.
+                    </p>
+
+                }
+                else
+                {
+
+                    foreach(var log in Model.ActivityLogs)
+                    {
+
+                        <div class="mb-3">
+
+                            <strong>
+                                @log.Action
+                            </strong>
+
+                            <br />
+
+                            @log.Description
+
+                            <br />
+
+                            <small class="text-muted">
+
+                                @log.Timestamp.ToLocalTime()
+
+                            </small>
+
+
+                        </div>
+
+                        <hr />
+
+                    }
+
+                }
+
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+
 </div>

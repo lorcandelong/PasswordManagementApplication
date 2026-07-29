@@ -1,0 +1,184 @@
+﻿@model IEnumerable<SecurePasswordApplication.Models.ActivityLog>
+
+@{
+    ViewData["Title"] = "Activity Logs";
+}
+
+<h1 class="mb-4">Activity Logs</h1>
+
+
+<div class="card shadow-sm">
+
+    <div class="card-body">
+
+
+        <input type="text"
+               id="logSearch"
+               class="form-control mb-3"
+               placeholder="Search logs..." />
+
+
+        <div class="mb-3">
+
+            <button class="btn btn-danger filter-btn"
+                    data-filter="All">
+                All
+            </button>
+
+            <button class="btn btn-secondary filter-btn"
+                    data-filter="Login">
+                Login
+            </button>
+
+            <button class="btn btn-secondary filter-btn"
+                    data-filter="Password">
+                Password
+            </button>
+
+            <button class="btn btn-secondary filter-btn"
+                    data-filter="Security">
+                Security
+            </button>
+
+        </div>
+
+
+        <div style="max-height:600px; overflow-y:auto;">
+
+
+            @foreach (var log in Model)
+            {
+
+                <div class="activity-entry border-bottom py-3"
+                     data-action="@log.Action">
+
+
+                    <h5>
+                        @log.Action
+                    </h5>
+
+
+                    <p>
+                        @log.Description
+                    </p>
+
+
+                    <small class="text-muted">
+                        @log.Timestamp.ToLocalTime()
+                    </small>
+
+
+                </div>
+
+            }
+
+
+        </div>
+
+
+    </div>
+
+</div>
+
+
+@section Scripts {
+
+    <script>
+
+        let currentFilter = "All";
+
+
+        document.getElementById("logSearch")
+        .addEventListener("keyup", filterLogs);
+
+
+
+        document.querySelectorAll(".filter-btn")
+        .forEach(button => {
+
+            button.addEventListener("click", function(){
+
+                currentFilter = this.dataset.filter;
+
+                filterLogs();
+
+            });
+
+        });
+
+
+
+        function filterLogs(){
+
+            let search =
+                document.getElementById("logSearch")
+                .value
+                .toLowerCase();
+
+
+            document.querySelectorAll(".activity-entry")
+            .forEach(log => {
+
+
+                let text =
+                    log.innerText.toLowerCase();
+
+
+                let action =
+                    log.dataset.action;
+
+
+                let matchesSearch =
+                    text.includes(search);
+
+
+                let matchesFilter = false;
+
+
+
+                if(currentFilter === "All")
+                {
+                    matchesFilter = true;
+                }
+
+
+                else if(currentFilter === "Login")
+                {
+                    matchesFilter =
+                        action === "Login" ||
+                        action === "Logout";
+                }
+
+
+                else if(currentFilter === "Password")
+                {
+                    matchesFilter =
+                        action === "Create" ||
+                        action === "Edit" ||
+                        action === "Delete" ||
+                        action === "Reveal" ||
+                        action === "Copy";
+                }
+
+
+                else if(currentFilter === "Security")
+                {
+                    matchesFilter =
+                        action === "Security";
+                }
+
+
+
+                log.style.display =
+                    matchesSearch && matchesFilter
+                    ? ""
+                    : "none";
+
+
+            });
+
+        }
+
+    </script>
+
+}

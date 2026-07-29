@@ -1,0 +1,239 @@
+@model SecurePasswordApplication.Models.PasswordEntry
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>PasswordEntry</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group">
+                <label asp-for="Website" class="control-label"></label>
+                <input asp-for="Website" class="form-control" />
+                <span asp-validation-for="Website" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Username" class="control-label"></label>
+                <input asp-for="Username" class="form-control" />
+                <span asp-validation-for="Username" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Password" class="control-label"></label>
+
+                <div class="input-group">
+
+                    <input asp-for="Password"
+                           type="password"
+                           class="form-control"
+                           oninput="checkStrength(this.value)" />
+
+                    <button type="button"
+                            class="btn btn-outline-secondary"
+                            onclick="togglePassword()">
+                        Show
+                    </button>
+
+                    <button type="button"
+                            class="btn btn-outline-secondary"
+                            onclick="generatePassword()">
+                        Generate
+                    </button>
+
+                </div>
+                <div class="mt-2">
+                    <div class="progress" style="height:8px;">
+                        <div id="strengthBar"
+                             class="progress-bar"
+                             style="width:0%">
+                        </div>
+                    </div>
+
+                    <small id="strengthText" class="text-muted">
+                        <small id="strengthText" class="text-muted">
+                        Enter a password
+                        </small>
+                    </small>
+                </div>
+               
+                <span asp-validation-for="Password" class="text-danger"></span>
+
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Notes" class="control-label"></label>
+                <input asp-for="Notes" class="form-control" />
+                <span asp-validation-for="Notes" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ExpirationDate" class="control-label">
+                    Password Expiration Date
+                </label>
+
+                <input asp-for="ExpirationDate"
+                       class="form-control"
+                       type="date" />
+
+                <span asp-validation-for="ExpirationDate"
+                      class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+
+        function generatePassword() {
+
+            const length = 20;
+
+            const uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            const lowercase = "abcdefghijklmnopqrstuvwxyz";
+            const numbers = "0123456789";
+            const symbols = "!@@#$%^&*()-_=+[]{}<>?";
+
+            const allCharacters =
+                uppercase +
+                lowercase +
+                numbers +
+                symbols;
+
+            let password = "";
+
+            password += getRandomCharacter(uppercase);
+            password += getRandomCharacter(lowercase);
+            password += getRandomCharacter(numbers);
+            password += getRandomCharacter(symbols);
+
+            while (password.length < length) {
+                password += getRandomCharacter(allCharacters);
+            }
+
+            password = shuffle(password);
+
+                   document.getElementById("Password").value = password;
+                   checkStrength(password);
+        }
+
+        function getRandomCharacter(characters) {
+
+            const random =
+                crypto.getRandomValues(new Uint32Array(1))[0];
+
+            return characters[random % characters.length];
+        }
+
+        function shuffle(password) {
+
+            let array = password.split("");
+
+            for (let i = array.length - 1; i > 0; i--) {
+
+                const j =
+                    crypto.getRandomValues(new Uint32Array(1))[0] % (i + 1);
+
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+
+            return array.join("");
+        }
+
+        function togglePassword() {
+
+            const passwordInput = document.getElementById("Password");
+            const button = event.target;
+
+            if (passwordInput.type === "password") {
+
+                passwordInput.type = "text";
+                button.textContent = "Hide";
+
+            } else {
+
+                passwordInput.type = "password";
+                button.textContent = "Show";
+
+            }
+        }
+
+                function checkStrength(password) {
+                            if (password.length === 0) {
+                                 bar.style.width = "0%";
+                                 bar.className = "progress-bar";
+                                 text.textContent = "Enter a password";
+            return;
+        }
+            let score = 0;
+
+            if (password.length >= 8)
+                score++;
+
+            if (password.length >= 12)
+                score++;
+
+            if (/[A-Z]/.test(password))
+                score++;
+
+            if (/[a-z]/.test(password))
+                score++;
+
+            if (/[0-9]/.test(password))
+                score++;
+
+            if (/[^A-Za-z0-9]/.test(password))
+                score++;
+
+            const bar = document.getElementById("strengthBar");
+            const text = document.getElementById("strengthText");
+
+            switch(score){
+
+                case 0:
+                case 1:
+                    bar.style.width = "20%";
+                    bar.className = "progress-bar bg-danger";
+                    text.textContent = "Password strength: Weak";
+                    break;
+
+                case 2:
+                case 3:
+                    bar.style.width = "45%";
+                    bar.className = "progress-bar bg-warning";
+                    text.textContent = "Password strength: Fair";
+                    break;
+
+                case 4:
+                case 5:
+                    bar.style.width = "75%";
+                    bar.className = "progress-bar bg-info";
+                    text.textContent = "Password strength: Strong";
+                    break;
+
+                case 6:
+                    bar.style.width = "100%";
+                    bar.className = "progress-bar bg-success";
+                    text.textContent = "Password strength: Very Strong";
+                    break;
+            }
+        }
+    </script>
+
+}

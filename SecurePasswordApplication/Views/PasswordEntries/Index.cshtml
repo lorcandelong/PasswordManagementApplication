@@ -1,0 +1,113 @@
+@model IEnumerable<SecurePasswordApplication.Models.PasswordEntry>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Website)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Username)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Password)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Notes)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(model => item.Website)
+            </td>
+            <td>
+                @Html.DisplayFor(model => item.Username)
+            </td>
+                <td>
+                        <span id="password-display-@item.Id">
+                            ********
+                        </span>
+
+                    <button type="button"
+                            class="btn btn-sm btn-secondary"
+                            id="reveal-button-@item.Id"
+                            onclick="togglePassword('@item.Id')">
+                        Reveal
+                    </button>
+
+                        <button type="button"
+                                class="btn btn-sm btn-secondary"
+                                onclick="copyPassword('@item.Id')">
+                            Copy
+                        </button>
+                   
+                </td>
+            <td>
+                @Html.DisplayFor(model => item.Notes)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+<script>
+    async function copyPassword(id) {
+        const response = await fetch('/PasswordEntries/GetPassword/' + id);
+
+        if (response.ok) {
+            const password = await response.text();
+
+            await navigator.clipboard.writeText(password);
+
+            alert("Password copied!");
+        }
+    }
+</script>
+
+<script>
+
+    async function togglePassword(id) {
+
+    const passwordSpan = document.getElementById("password-display-" + id);
+    const button = document.getElementById("reveal-button-" + id);
+
+    if (button.textContent.trim() === "Hide") {
+
+        passwordSpan.textContent = "********";
+        button.textContent = "Reveal";
+        return;
+    }
+
+    const response = await fetch('/PasswordEntries/RevealPassword/' + id);
+
+    if (response.ok) {
+
+        const password = await response.text();
+
+        passwordSpan.textContent = password;
+        button.textContent = "Hide";
+    }
+    else {
+
+        alert("Unable to reveal password.");
+    }
+}
+
+</script>
