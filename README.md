@@ -74,13 +74,13 @@ Update-Database
 ## Screenshots
 
 ### Dashboard
-![Login Page](PasswordManagementApplication/Screenshots/Dashboard.png)
+![Dashboard](PasswordManagementApplication/Screenshots/Dashboard.png)
 
 ### Password Manger
-![Security Dashboard](PasswordManagementApplication/Screenshots/passwords.png)
+![Password Manager](PasswordManagementApplication/Screenshots/Passwords.png)
 
 ### Activity Log
-![Password Manager](PasswordManagementApplication/Screenshots/Logs.png)
+![Activity Log](PasswordManagementApplication/Screenshots/Logs.png)
 
 
 ## Future Improvements
