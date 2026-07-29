@@ -73,13 +73,15 @@ Update-Database
 
 ## Screenshots
 
-Add screenshots demonstrating:
+### Dashboard
+![Login Page](Screenshots/Dashboard.png)
 
-- Login page
-- Password management dashboard
-- Security score page
-- MFA authenticator setup
-- Activity logging dashboard
+### Password Manger
+![Security Dashboard](Screenshots/passwords.png)
+
+### Activity Log
+![Password Manager](Screenshots/Logs.png)
+
 
 ## Future Improvements
 
