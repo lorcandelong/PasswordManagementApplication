@@ -1,1 +1,1 @@
-# SecurePasswordApplication
+# Kestrel Password Manager
